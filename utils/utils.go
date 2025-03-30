@@ -3,6 +3,7 @@ package utils
 import (
 	"os"
 	"strconv"
+	"strings"
 )
 
 func GetEnvString(key string, defaultValue string) string {
@@ -36,4 +37,8 @@ func GetEnvBool(key string, defaultValue bool) bool {
 	}
 
 	return boolVal
+}
+
+func CountLines(text string) int {
+	return strings.Count(text, "\n") + 1
 }

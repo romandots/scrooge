@@ -13,7 +13,7 @@ var conn *pgxpool.Pool
 var router *gin.Engine
 
 func main() {
-	_, err := postgres.InitPool()
+	err := postgres.InitPool()
 	if err != nil {
 		utils.Error("Failed to connect to the database")
 		panic(err)

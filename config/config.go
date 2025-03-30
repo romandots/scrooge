@@ -22,9 +22,10 @@ func init() {
 	TelegramBotToken = utils.GetEnvString("TELEGRAM_BOT_TOKEN", TelegramBotToken)
 	TelegramBotDebug = utils.GetEnvBool("TELEGRAM_BOT_DEBUG", TelegramBotDebug)
 	Database = &DatabaseConfig{
+		Host:     utils.GetEnvString("DB_HOST", "localhost"),
+		Port:     utils.GetEnvString("DB_PORT", "5432"),
 		Database: utils.GetEnvString("DB_NAME", "scrooge"),
 		Username: utils.GetEnvString("DB_USER", "postgres"),
 		Password: utils.GetEnvString("DB_PASSWORD", "postgres"),
-		Port:     utils.GetEnvString("DB_PORT", "5432"),
 	}
 }
