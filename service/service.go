@@ -7,6 +7,10 @@ import (
 	"time"
 )
 
+func DeleteLastExpense() error {
+	return postgres.DeleteLastExpense()
+}
+
 func RecordExpense(amount int, category string, receiver string, date time.Time) (expense *entity.Expense, err error) {
 	expense = &entity.Expense{
 		Amount:   amount,
@@ -21,18 +25,37 @@ func RecordExpense(amount int, category string, receiver string, date time.Time)
 	return
 }
 
-func GetQuickStats(category string) (todayTotalExpenses, weekCategoryExpenses, monthCategoryExpenses int, err error) {
+func GetQuickStats() (todayTotalExpenses, weekTotalExpenses, monthTotalExpenses int, err error) {
 	todayTotalExpenses, err = postgres.GetTotalExpensesToday()
 	if err != nil {
 		return
 	}
 
-	weekCategoryExpenses, err = postgres.GetWeekExpensesBySubject(category)
+	weekTotalExpenses, err = postgres.GetWeekExpensesBySubject(nil)
 	if err != nil {
 		return
 	}
 
-	monthCategoryExpenses, err = postgres.GetMonthExpensesBySubject(category)
+	monthTotalExpenses, err = postgres.GetMonthExpensesBySubject(nil)
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+func GetQuickStatsByCategory(category string) (todayTotalExpenses, weekCategoryExpenses, monthCategoryExpenses int, err error) {
+	todayTotalExpenses, err = postgres.GetTotalExpensesToday()
+	if err != nil {
+		return
+	}
+
+	weekCategoryExpenses, err = postgres.GetWeekExpensesBySubject(&category)
+	if err != nil {
+		return
+	}
+
+	monthCategoryExpenses, err = postgres.GetMonthExpensesBySubject(&category)
 	if err != nil {
 		return
 	}

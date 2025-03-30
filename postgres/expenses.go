@@ -21,18 +21,18 @@ func GetTotalExpensesToday() (int, error) {
 	})
 }
 
-func GetWeekExpensesBySubject(subject string) (int, error) {
+func GetWeekExpensesBySubject(subject *string) (int, error) {
 	startOfThisWeek := utils.StartOfWeek(time.Now())
 	return getExpensesTotal(&FilterExpenses{
-		Subject:  &subject,
+		Subject:  subject,
 		FromDate: &startOfThisWeek,
 	})
 }
 
-func GetMonthExpensesBySubject(subject string) (int, error) {
+func GetMonthExpensesBySubject(subject *string) (int, error) {
 	startOfThisMonth := utils.StartOfMonth(time.Now())
 	return getExpensesTotal(&FilterExpenses{
-		Subject:  &subject,
+		Subject:  subject,
 		FromDate: &startOfThisMonth,
 	})
 }
@@ -46,6 +46,18 @@ func CreateExpense(expense *entity.Expense) error {
 			"receiver":   expense.Receiver,
 			"created_at": expense.Time,
 		}).
+		ToSql()
+	if err != nil {
+		return err
+	}
+
+	return exec(sql, args...)
+}
+
+func DeleteLastExpense() error {
+	sql, args, err := Sq.
+		Delete("expenses").
+		Where("created_at = (SELECT MAX(created_at) FROM expenses)").
 		ToSql()
 	if err != nil {
 		return err
