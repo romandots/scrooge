@@ -6,11 +6,7 @@ import (
 )
 
 func StartOfWeek(t time.Time) time.Time {
-	offset := int(time.Monday - t.Weekday())
-	if offset > 0 {
-		offset = -6
-	}
-	return t.AddDate(0, 0, offset)
+	return time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location()).AddDate(0, 0, -int(t.Weekday()-1))
 }
 
 func StartOfMonth(t time.Time) time.Time {

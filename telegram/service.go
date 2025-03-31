@@ -32,11 +32,6 @@ func StartBot() {
 	u.Timeout = 60
 
 	updates := bot.GetUpdatesChan(u)
-	if err != nil {
-		utils.Error("Failed to receive updates from Telegram: " + err.Error())
-		panic(err)
-	}
-
 	for update := range updates {
 		if update.Message != nil {
 			utils.Debug("Telegram message received: %v", update.Message)

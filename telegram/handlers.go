@@ -3,6 +3,7 @@ package telegram
 import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"regexp"
 	"scrooge/messages"
 	"scrooge/service"
 	"scrooge/utils"
@@ -97,6 +98,29 @@ func parseMessage(text string) (amount int, category string, receiver string, t 
 	}
 
 	lines := strings.Split(text, "\n")
+
+	if len(lines) == 1 {
+		re := regexp.MustCompile(`^(\d+)\s+([\p{L}]+)\s*(.*)$`)
+		matches := re.FindStringSubmatch(text)
+		if len(matches) < 2 {
+			err = fmt.Errorf("wrong format")
+			return
+		}
+		amount, err = strconv.Atoi(matches[1])
+		if err != nil {
+			return
+		}
+
+		category = matches[2]
+		if len(matches) > 3 {
+			receiver = matches[3]
+		}
+
+		t = time.Now()
+
+		return
+	}
+
 	if len(lines) < 2 || len(lines) > 4 {
 		err = fmt.Errorf("wrong format")
 		return
