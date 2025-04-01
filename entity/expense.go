@@ -1,6 +1,8 @@
 package entity
 
-import "time"
+import (
+	"time"
+)
 
 type Expense struct {
 	Amount   int       `json:"amount" db:"amount"`

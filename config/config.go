@@ -10,11 +10,19 @@ type DatabaseConfig struct {
 	Host     string
 }
 
+type RedisConfig struct {
+	Host     string
+	Port     string
+	Password string
+	DB       int
+}
+
 var (
 	Socket           = "localhost:8888"
 	TelegramBotToken = ""
 	TelegramBotDebug = true
 	Database         *DatabaseConfig
+	Redis            *RedisConfig
 )
 
 func init() {
@@ -28,4 +36,12 @@ func init() {
 		Username: utils.GetEnvString("DB_USER", "postgres"),
 		Password: utils.GetEnvString("DB_PASSWORD", "postgres"),
 	}
+	Redis = &RedisConfig{
+		Host:     utils.GetEnvString("REDIS_HOST", "localhost"),
+		Port:     utils.GetEnvString("REDIS_PORT", "6379"),
+		Password: utils.GetEnvString("REDIS_PASSWORD", ""),
+		DB:       utils.GetEnvInt("REDIS_DB", 0),
+	}
 }
+
+// get all records from redis with keys starting from 'rate:'

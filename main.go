@@ -21,7 +21,7 @@ func main() {
 
 	go telegram.StartBot()
 
-	router := server.InitRouter()
+	router = server.InitRouter()
 	server.InitRoutes(router)
 	err = server.Run(router)
 	if err != nil {

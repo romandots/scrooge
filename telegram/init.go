@@ -3,8 +3,16 @@ package telegram
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"scrooge/config"
+	"scrooge/messages"
 	"scrooge/utils"
 )
+
+var commands = []tgbotapi.BotCommand{
+	{Command: "start", Description: messages.StartCommand},
+	{Command: "balance", Description: messages.BalanceCommand},
+	{Command: "del", Description: messages.DelCommand},
+	{Command: "rates", Description: messages.RatesCommand},
+}
 
 func StartBot() {
 	utils.Info("Starting Telegram bot...")
@@ -17,11 +25,6 @@ func StartBot() {
 	bot.Debug = config.TelegramBotDebug
 
 	// register commands
-	commands := []tgbotapi.BotCommand{
-		{Command: "start", Description: "Start the bot"},
-		{Command: "balance", Description: "Get your balance"},
-		{Command: "del", Description: "Delete the last expense"},
-	}
 	_, err = bot.Request(tgbotapi.NewSetMyCommands(commands...))
 	if err != nil {
 		utils.Error("Failed to set bot commands: " + err.Error())
