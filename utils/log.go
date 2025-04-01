@@ -1,22 +1,25 @@
 package utils
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
-func log(level string, args ...any) {
+func log(level string, args ...any) string {
 	format := args[0].(string)
 	message := fmt.Sprintf(format, args[1:]...)
-
-	fmt.Printf("[%s] %s\n", level, message)
+	fmt.Sprintf("[%s] %s\n", level, message)
+	return message
 }
 
-func Info(args ...any) {
-	log("INFO", args...)
+func Info(args ...any) string {
+	return log("INFO", args...)
 }
 
-func Debug(args ...any) {
-	log("DEBUG", args...)
+func Debug(args ...any) string {
+	return log("DEBUG", args...)
 }
 
-func Error(args ...any) {
-	log("ERROR", args...)
+func Error(args ...any) error {
+	return errors.New(log("ERROR", args...))
 }

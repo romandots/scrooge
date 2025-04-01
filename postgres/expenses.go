@@ -41,10 +41,13 @@ func CreateExpense(expense *entity.Expense) error {
 	sql, args, err := Sq.
 		Insert("expenses").
 		SetMap(map[string]interface{}{
-			"amount":     expense.Amount,
-			"subject":    expense.Category,
-			"receiver":   expense.Receiver,
-			"created_at": expense.Time,
+			"amount":           expense.Amount,
+			"converted_amount": expense.ConvertedAmount,
+			"rate":             expense.CurrencyRate(),
+			"currency":         expense.Currency(),
+			"subject":          expense.Category,
+			"receiver":         expense.Receiver,
+			"created_at":       expense.Time,
 		}).
 		ToSql()
 	if err != nil {
@@ -68,7 +71,7 @@ func DeleteLastExpense() error {
 
 func getExpenses(filter FilterExpenses) ([]entity.Expense, error) {
 	builder := Sq.
-		Select("amount", "subject", "receiver", "created_at").
+		Select("amount", "converted_amount", "currency", "rate", "subject", "receiver", "created_at").
 		From("expenses").
 		Where("true")
 
@@ -94,10 +97,12 @@ func getExpenses(filter FilterExpenses) ([]entity.Expense, error) {
 	var expenses []entity.Expense
 	for rows.Next() {
 		var expense entity.Expense
-		err := rows.Scan(&expense.Amount, &expense.Category, &expense.Receiver, &expense.Time)
+		var rate entity.Rate
+		err := rows.Scan(&expense.Amount, &rate.Currency, &rate.Rate, &expense.Category, &expense.Receiver, &expense.Time)
 		if err != nil {
 			return nil, err
 		}
+		expense.Rate = &rate
 		expenses = append(expenses, expense)
 	}
 
@@ -106,7 +111,7 @@ func getExpenses(filter FilterExpenses) ([]entity.Expense, error) {
 
 func getExpensesTotal(filter *FilterExpenses) (int, error) {
 	builder := Sq.
-		Select("COALESCE(SUM(amount), 0)").
+		Select("COALESCE(SUM(converted_amount), 0)").
 		From("expenses").
 		Where("true")
 

@@ -4,6 +4,9 @@ CREATE TABLE expenses
 (
     id SERIAL PRIMARY KEY,
     amount INTEGER NOT NULL,
+    converted_amount INTEGER NOT NULL,
+    currency TEXT DEFAULT NULL,
+    rate FLOAT DEFAULT NULL,
     subject TEXT NOT NULL,
     receiver TEXT DEFAULT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP

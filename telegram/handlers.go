@@ -34,7 +34,13 @@ func handleMessage(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
 		return
 	}
 
-	expense, found := service.ParseExpenseMessage(message.Text)
+	expense, found, err := service.ParseExpenseMessage(message.Text)
+	if err != nil {
+		msg.Text = err.Error()
+		bot.Send(msg)
+		return
+	}
+
 	if found {
 		service.HandleExpenseMessage(bot, &msg, expense)
 		return

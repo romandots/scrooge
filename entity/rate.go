@@ -1,6 +1,6 @@
 package entity
 
 type Rate struct {
-	Currency string
-	Rate     float64
+	Currency string  `json:"currency" db:"currency"`
+	Rate     float64 `json:"rate" db:"rate"`
 }

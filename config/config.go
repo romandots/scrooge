@@ -20,7 +20,7 @@ type RedisConfig struct {
 var (
 	Socket           = "localhost:8888"
 	TelegramBotToken = ""
-	TelegramBotDebug = true
+	TelegramBotDebug = false
 	Database         *DatabaseConfig
 	Redis            *RedisConfig
 )
@@ -43,5 +43,3 @@ func init() {
 		DB:       utils.GetEnvInt("REDIS_DB", 0),
 	}
 }
-
-// get all records from redis with keys starting from 'rate:'

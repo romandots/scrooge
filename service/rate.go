@@ -17,8 +17,15 @@ func ParseRateMessage(text string) (*entity.Rate, bool) {
 		return nil, false
 	}
 
-	text = strings.ToUpper(text)
-	rateMatch := regexp.MustCompile(`^КУРС\s+([\d,.]+)\s*(.*)$`)
+	text = strings.ToUpper(strings.Trim(text, " "))
+	rateMatch := regexp.MustCompile(`^КУРС\s+([\d,\.]+)\s*(.*)$`)
+	rateIndex := 1
+	currencyIndex := 2
+	if !rateMatch.MatchString(text) {
+		rateMatch = regexp.MustCompile(`^КУРС\s+([\D]+)\s*([\d,\.]+)$`)
+		rateIndex = 2
+		currencyIndex = 1
+	}
 	if !rateMatch.MatchString(text) {
 		return nil, false
 	}
@@ -28,7 +35,7 @@ func ParseRateMessage(text string) (*entity.Rate, bool) {
 		return nil, false
 	}
 
-	float, err := strconv.ParseFloat(matches[1], 64)
+	float, err := strconv.ParseFloat(strings.ReplaceAll(matches[rateIndex], ",", "."), 64)
 	if err != nil {
 		utils.Error("Failed to parse rate: %v", err)
 		return nil, false
@@ -36,7 +43,7 @@ func ParseRateMessage(text string) (*entity.Rate, bool) {
 
 	return &entity.Rate{
 		Rate:     float,
-		Currency: matches[2],
+		Currency: strings.Trim(matches[currencyIndex], " "),
 	}, true
 }
 
@@ -50,7 +57,7 @@ func HandleRateMessage(bot *tgbotapi.BotAPI, reply *tgbotapi.MessageConfig, rate
 		return
 	}
 	reverseRate := 1 / rate.Rate
-	reply.Text = fmt.Sprintf(messages.RateSet, rate.Currency, rate.Rate, reverseRate)
+	reply.Text = fmt.Sprintf(messages.RateSet, fmt.Sprintf(messages.RateLine, rate.Currency, rate.Rate, reverseRate))
 	bot.Send(reply)
 }
 
@@ -76,6 +83,21 @@ func HandleRatesCommand(bot *tgbotapi.BotAPI, reply *tgbotapi.MessageConfig) {
 
 	reply.Text = message
 	bot.Send(reply)
+}
+
+func getRate(currency string) (float64, error) {
+	cacheKey := cacheKey(currency)
+	rateRaw, err := cache.Get(cacheKey)
+	if rateRaw == "" {
+		return 0, nil
+	}
+
+	rate, err := strconv.ParseFloat(rateRaw, 64)
+	if err != nil {
+		return 0, err
+	}
+
+	return rate, nil
 }
 
 func cacheKey(currency string) string {
