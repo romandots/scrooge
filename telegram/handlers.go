@@ -12,6 +12,7 @@ func handleMessage(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
 	}
 
 	msg := tgbotapi.NewMessage(message.Chat.ID, "")
+	msg.ParseMode = "Markdown"
 
 	switch message.Text {
 	case "/start":
