@@ -25,7 +25,7 @@ var (
 	Redis            *RedisConfig
 )
 
-func init() {
+func InitConfig() {
 	Socket = utils.GetEnvString("SOCKET", Socket)
 	TelegramBotToken = utils.GetEnvString("TELEGRAM_BOT_TOKEN", TelegramBotToken)
 	TelegramBotDebug = utils.GetEnvBool("TELEGRAM_BOT_DEBUG", TelegramBotDebug)
@@ -42,4 +42,20 @@ func init() {
 		Password: utils.GetEnvString("REDIS_PASSWORD", ""),
 		DB:       utils.GetEnvInt("REDIS_DB", 0),
 	}
+
+	if TelegramBotToken == "" {
+		utils.Error("Telegram bot token is not set")
+		panic("Telegram bot token is not set")
+	}
+
+	utils.Debug("Socket: %s", Socket)
+	utils.Debug("Telegram Bot Token: %s", TelegramBotToken)
+	utils.Debug("Telegram Bot Debug: %v", TelegramBotDebug)
+	utils.Debug("Database Host: %s", Database.Host)
+	utils.Debug("Database Port: %s", Database.Port)
+	utils.Debug("Database Name: %s", Database.Database)
+	utils.Debug("Database Username: %s", Database.Username)
+	utils.Debug("Database Password: %s", Database.Password)
+	utils.Debug("Redis Host: %s", Redis.Host)
+	utils.Debug("Redis Port: %s", Redis.Port)
 }

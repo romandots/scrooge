@@ -1,0 +1,41 @@
+services:
+  scrooge:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
+    environment:
+      - SOCKET=localhost:8888
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:?error}
+      - TELEGRAM_BOT_DEBUG=false
+      - DB_HOST=${DB_HOST:-postgres}
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_NAME=${DB_NAME:-scrooge}
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-postgres}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - postgres
+      - redis
+    command: >
+      sh -c "
+      echo 'Running migrations' &&
+      /bin/goose -dir /migrations postgres 'host=${DB_HOST:-postgres} port=${DB_PORT:-5432} user=${DB_USER:-postgres} password=${DB_PASSWORD:-postgres} dbname=${DB_NAME:-scrooge} sslmode=disable' up &&
+      echo 'Starting application' &&
+      /bin/app
+      "
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-scrooge}

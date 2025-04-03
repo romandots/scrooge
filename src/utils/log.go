@@ -8,7 +8,7 @@ import (
 func log(level string, args ...any) string {
 	format := args[0].(string)
 	message := fmt.Sprintf(format, args[1:]...)
-	fmt.Sprintf("[%s] %s\n", level, message)
+	fmt.Printf("[%s] %s\n", level, message)
 	return message
 }
 

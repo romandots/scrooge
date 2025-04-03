@@ -11,7 +11,7 @@ import (
 var rdb *redis.Client
 var ctx = context.Background()
 
-func init() {
+func InitRedis() {
 	rdb = redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%s", config.Redis.Host, config.Redis.Port),
 		Password: config.Redis.Password,
