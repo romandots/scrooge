@@ -43,6 +43,8 @@ services:
       POSTGRES_DB: ${DB_NAME:-scrooge}
     volumes:
       - db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${DB_USER:-postgres}"]
 
 volumes:
   db:
