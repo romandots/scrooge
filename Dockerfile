@@ -7,6 +7,7 @@ RUN go build -o app .
 RUN go install github.com/pressly/goose/v3/cmd/goose@latest
 
 FROM ubuntu:latest
+RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /usr/local/bin
 COPY --from=builder /build/app .
 COPY --from=builder /go/bin/goose /usr/local/bin/goose
