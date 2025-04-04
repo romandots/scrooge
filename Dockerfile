@@ -7,8 +7,9 @@ RUN go build -o app .
 RUN go install github.com/pressly/goose/v3/cmd/goose@latest
 
 FROM alpine:latest
-WORKDIR /bin
+WORKDIR /usr/local/bin
 COPY --from=builder /build/app .
-COPY --from=builder /go/bin/goose /bin/goose
+COPY --from=builder /go/bin/goose /usr/local/bin/goose
 COPY --from=builder /build/migrations /migrations
-#ENTRYPOINT ["/bin/app"]
+COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
+RUN chmod +x /usr/local/bin/wait-for-it.sh

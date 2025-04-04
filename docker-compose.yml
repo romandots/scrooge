@@ -21,10 +21,12 @@ services:
       - redis
     command: >
       sh -c "
+      echo 'Waiting for DB initialization' &&
+      /usr/local/bin/wait-for-it.sh ${DB_HOST:-postgres}:${DB_PORT:-5432} --timeout=60 --strict &&
       echo 'Running migrations' &&
-      /bin/goose -dir /migrations postgres 'host=${DB_HOST:-postgres} port=${DB_PORT:-5432} user=${DB_USER:-postgres} password=${DB_PASSWORD:-postgres} dbname=${DB_NAME:-scrooge} sslmode=disable' up &&
+      /usr/local/bin/goose -dir /migrations postgres 'host=${DB_HOST:-postgres} port=${DB_PORT:-5432} user=${DB_USER:-postgres} password=${DB_PASSWORD:-postgres} dbname=${DB_NAME:-scrooge} sslmode=disable' up &&
       echo 'Starting application' &&
-      /bin/app
+      /usr/local/bin/app
       "
   redis:
     image: redis:latest
