@@ -6,7 +6,7 @@ COPY src/ ./
 RUN go build -o app .
 RUN go install github.com/pressly/goose/v3/cmd/goose@latest
 
-FROM alpine:latest
+FROM ubuntu:latest
 WORKDIR /usr/local/bin
 COPY --from=builder /build/app .
 COPY --from=builder /go/bin/goose /usr/local/bin/goose
