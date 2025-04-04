@@ -2,6 +2,8 @@ package entity
 
 import (
 	"fmt"
+	"scrooge/messages"
+	"scrooge/utils"
 	"time"
 )
 
@@ -47,5 +49,5 @@ func (e *Expense) ToString() string {
 	if e.Rate == nil || e.Rate.Rate == 0 {
 		return fmt.Sprintf("%d₽", e.Amount)
 	}
-	return fmt.Sprintf("%d₽ (%d %s)", e.RublesAmount(), e.CurrencyAmount(), e.Rate.Currency)
+	return fmt.Sprintf(messages.Price, utils.FormatNumber(e.RublesAmount()), utils.FormatNumber(e.CurrencyAmount()), e.Rate.Currency)
 }

@@ -15,7 +15,7 @@ func HandleBalanceCommand(bot *tgbotapi.BotAPI, reply *tgbotapi.MessageConfig, m
 		message += fmt.Sprintf(messages.FailedToGetQuickStats, err.Error())
 		utils.Error(message)
 	} else {
-		message += fmt.Sprintf(messages.QuickStats, utils.FormatDateRussian(time.Now()), todayTotalExpenses, weekCategoryExpenses, monthCategoryExpenses)
+		message += fmt.Sprintf(messages.QuickStats, utils.FormatDateRussian(time.Now()), utils.FormatNumber(todayTotalExpenses), utils.FormatNumber(weekCategoryExpenses), utils.FormatNumber(monthCategoryExpenses))
 	}
 
 	reply.Text = message

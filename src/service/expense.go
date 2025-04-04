@@ -119,7 +119,11 @@ func HandleExpenseMessage(bot *tgbotapi.BotAPI, reply *tgbotapi.MessageConfig, e
 	}
 
 	utils.Debug("Saved expense: %v", expense)
-	reply.Text = fmt.Sprintf(messages.ExpenseSaved, expense.ToString(), expense.Category)
+	if expense.Receiver != "" {
+		reply.Text = fmt.Sprintf(messages.ExpenseSavedIn, expense.ToString(), expense.Category, expense.Receiver)
+	} else {
+		reply.Text = fmt.Sprintf(messages.ExpenseSaved, expense.ToString(), expense.Category)
+	}
 	reply.Text += "\n\n"
 	todayTotalExpenses, weekCategoryExpenses, monthCategoryExpenses, err := getQuickStatsByCategory(expense.Category)
 	if err != nil {
@@ -127,7 +131,7 @@ func HandleExpenseMessage(bot *tgbotapi.BotAPI, reply *tgbotapi.MessageConfig, e
 		reply.Text += errorMsg
 		utils.Error(errorMsg)
 	} else {
-		reply.Text += fmt.Sprintf(messages.QuickStatsByCategory, utils.FormatDateRussian(time.Now()), todayTotalExpenses, expense.Category, weekCategoryExpenses, monthCategoryExpenses)
+		reply.Text += fmt.Sprintf(messages.QuickStatsByCategory, utils.FormatDateRussian(time.Now()), utils.FormatNumber(todayTotalExpenses), expense.Category, utils.FormatNumber(weekCategoryExpenses), utils.FormatNumber(monthCategoryExpenses))
 	}
 
 	bot.Send(reply)
