@@ -31,19 +31,19 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - redis_data:/data
+      - cache:/data
   postgres:
     image: postgres:latest
     container_name: postgres
     ports:
       - "5432:5432"
     environment:
-      PGUSER: ${DB_USER:-postgres}
-      PGPASSWORD: ${DB_PASSWORD:-postgres}
-      PGDATABASE: ${DB_NAME:-scrooge}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-scrooge}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - db:/var/lib/postgresql/data
 
 volumes:
-  postgres_data:
-  redis_data:
+  db:
+  cache:
